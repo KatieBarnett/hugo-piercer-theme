@@ -3,19 +3,47 @@
     <!-- Header -->
     <header class="card__header">
         <h1 class="card__header__title">
-            <a href="{{ .Permalink }}" class="card__header__title__link" alt="{{ .Title }}">
-                {{ .Title }}
-            </a>
+            {{ if .Params.ExternalLink }}
+                <a href="{{ .Params.ExternalLink }}" class="card__header__title__link" alt="{{ .Title }}">
+                    {{ .Title }}
+                </a>
+            {{ else }}
+                <a href="{{ .Permalink }}" class="card__header__title__link" alt="{{ .Title }}">
+                    {{ .Title }}
+                </a>
+            {{ end }}
         </h1>
-
-        {{ if .Params.Author }}
-        <p class="card__header__author">
-            {{ .Params.Author }}
-        </p>
+        {{ if .Params.Subtitle }}
+        <h2 class="card__header__subtitle">
+            {{ .Params.Subtitle }}
+        </h2>
         {{ end }}
 
-        {{ if .Params.PublishDate }}
+        {{ if or (.Params.Author) (.Params.Source) (.Params.PublishDate) }}
         <p class="card__header__date">
+
+            {{ if .Params.AuthorLink }}
+                <a href="{{ .Params.AuthorLink }}" alt="{{ .Params.Author }}">
+                    {{ .Params.Author }}
+                </a>
+            {{ else }}
+                {{ .Params.Author }}
+            {{ end }}
+            {{ if and (.Params.Author) (.Params.Source) }}
+            |
+            {{ end }}
+            {{ if .Params.SourceLink }}
+                <a href="{{ .Params.SourceLink }}" alt="{{ .Params.Source }}">
+                    {{ .Params.Source }}
+                </a>
+            {{ else }}
+                {{ .Params.Source }}
+            {{ end }}
+
+            {{ if and (.Params.PublishDate) (.Params.Source) }}
+                <br/>     
+            {{ end }}
+
             {{ if $.Site.Params.date.format }}
             {{ .PublishDate.Format $.Site.Params.date.format }}
             {{ else }}
